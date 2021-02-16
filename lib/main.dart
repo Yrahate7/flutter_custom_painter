@@ -43,8 +43,8 @@ class _WhiteCanvasState extends State<WhiteCanvas> {
         child: Center(
           child: Circles(
             rectsAndPaint: [
-              {Rect.fromLTWH(50, 100, 50, 50): red},
-              {Rect.fromLTWH(300, 100, 50, 50): blue},
+              {Rect.fromLTWH(50, 200, 50, 50): red},
+              {Rect.fromLTWH(300, 200, 50, 50): blue},
               {Rect.fromLTWH(50, 400, 50, 50): green},
               {Rect.fromLTWH(300, 400, 50, 50): yellow},
             ],

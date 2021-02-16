@@ -82,8 +82,10 @@ class CirclePainter extends CustomPainter {
   void drawCircles(Canvas canvas) {
     for (var rectangleAndPaint in listOfRectsAndPaint) {
       rectangleAndPaint.entries.forEach(
-        (element) {
-          canvas.drawCircle(element.key.center, element.key.shortestSide / 2, element.value);
+        (rectAndPaint) {
+          // key in rectAndPaint is a Rect
+          // Value in rectAndPaint is a paint
+          canvas.drawCircle(rectAndPaint.key.center, rectAndPaint.key.shortestSide / 2, rectAndPaint.value);
         },
       );
     }

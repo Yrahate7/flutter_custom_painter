@@ -11,7 +11,7 @@ class Circles extends StatelessWidget {
     return GestureDetector(
       onTapDown: (details) => onCircleTap(details, context),
       child: CustomPaint(
-        painter: CirclePainter(rects: rectsAndPaint),
+        painter: CirclePainter(listOfRectsAndPaint: rectsAndPaint),
         size: MediaQuery.of(context).size,
       ),
     );
@@ -20,8 +20,10 @@ class Circles extends StatelessWidget {
   void onCircleTap(TapDownDetails details, BuildContext context) async {
     RenderBox box = context.findRenderObject();
 
+    // Find the offset at where the tap has occured in the given context's renderbox
     final offset = box.globalToLocal(details.globalPosition);
 
+    // Find index where the rectangle contains the offset at which the tap event occured
     final index = rectsAndPaint.lastIndexWhere(
       (rect) => checkIfRectangleContainsOffset(rect, offset),
     );
@@ -29,10 +31,17 @@ class Circles extends StatelessWidget {
     await showColorNameDialogIfIndexFoundOrShowTappedCanvasDialog(context, index);
   }
 
-  bool checkIfRectangleContainsOffset(Map<Rect, Paint> rectangleWithPaint, Offset offset) {
-    var rect = rectangleWithPaint.entries.first.key;
+  bool checkIfRectangleContainsOffset(Map<Rect, Paint> rectangleWithPaint, Offset tapLocationOffset) {
+    // Since we have a Map with only one entry, Use the first rectangle
+    Rect rect = rectangleWithPaint.entries.first.key;
 
-    if ((rect.center - offset).distance < rect.shortestSide / 2) {
+    print((rect.center - tapLocationOffset).distance);
+
+    // From the drawn rectangle's center check if the tapLocation's Offset's distance
+    // is less than the half of rectangle's shortest side
+    // If Yes, It means the tap occured on the given rectangle
+    // If no , it means the tap occured on the canvas
+    if ((rect.center - tapLocationOffset).distance < rect.shortestSide / 2) {
       return true;
     } else {
       return false;
@@ -61,9 +70,9 @@ class Circles extends StatelessWidget {
 }
 
 class CirclePainter extends CustomPainter {
-  final List<Map<Rect, Paint>> rects;
+  final List<Map<Rect, Paint>> listOfRectsAndPaint;
 
-  CirclePainter({@required this.rects});
+  CirclePainter({@required this.listOfRectsAndPaint});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -71,8 +80,8 @@ class CirclePainter extends CustomPainter {
   }
 
   void drawCircles(Canvas canvas) {
-    for (var rectangle in rects) {
-      rectangle.entries.forEach(
+    for (var rectangleAndPaint in listOfRectsAndPaint) {
+      rectangleAndPaint.entries.forEach(
         (element) {
           canvas.drawCircle(element.key.center, element.key.shortestSide / 2, element.value);
         },
